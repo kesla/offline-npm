@@ -1,0 +1,45 @@
+{
+  "name": "offline-npm",
+  "version": "0.0.0",
+  "description": "Offline first / caching npm registry",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "npm run watch & nodemon -w dist -w bin bin/server.js",
+    "test": "babel-tape-runner test/*-test.js",
+    "build": "rm -rf dist && mkdir -p dist && babel lib --out-dir dist",
+    "watch": "rm -rf dist && mkdir -p dist && babel -w lib --out-dir dist",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kesla/offline-npm.git"
+  },
+  "author": "David Björklund <david.bjorklund@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kesla/offline-npm/issues"
+  },
+  "homepage": "https://github.com/kesla/offline-npm#readme",
+  "devDependencies": {
+    "babel-cli": "^6.9.0",
+    "babel-core": "^6.9.1",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-tape-runner": "^2.0.1",
+    "semistandard": "^8.0.0",
+    "snazzy": "^4.0.0",
+    "tapava": "^2.1.3"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.9.1",
+    "bluebird": "^3.4.0",
+    "co": "^4.6.0",
+    "concurrent-couch-follower": "^1.0.1",
+    "home": "^1.0.1",
+    "koa": "^1.2.0",
+    "koa-route": "^2.4.2",
+    "level": "^1.4.0",
+    "level-promise": "^2.1.0",
+    "level-sublevel": "^6.5.4",
+    "mkdirp": "^0.5.1"
+  }
+}
