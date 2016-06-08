@@ -45,6 +45,7 @@
     "level": "^1.4.0",
     "level-promise": "^2.1.0",
     "level-sublevel": "^6.5.4",
+    "lodash.startswith": "^4.1.0",
     "mkdirp": "^0.5.1",
     "normalize-npm-registry-package": "^1.0.0",
     "then-fs": "^2.0.0"
