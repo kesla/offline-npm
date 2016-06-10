@@ -10,6 +10,9 @@
     "watch": "rm -rf dist && mkdir -p dist && babel -w lib --out-dir dist",
     "prepublish": "npm run build"
   },
+  "bin": {
+    "offline-npm": "bin/server.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kesla/offline-npm.git"
