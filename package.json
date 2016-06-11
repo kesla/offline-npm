@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "npm run watch & nodemon -w dist -w bin bin/server.js",
-    "test": "semistandard | snazzy",
+    "test": "nyc babel-tape-runner test/*-test.js && semistandard | snazzy",
     "build": "rm -rf dist && mkdir -p dist && babel lib --out-dir dist",
     "watch": "rm -rf dist && mkdir -p dist && babel -w lib --out-dir dist",
     "prepublish": "npm run build"
@@ -28,9 +28,11 @@
     "babel-core": "^6.9.1",
     "babel-preset-es2015": "^6.9.0",
     "babel-tape-runner": "^2.0.1",
+    "nyc": "^6.4.4",
     "semistandard": "^8.0.0",
+    "servertest": "^1.2.1",
     "snazzy": "^4.0.0",
-    "tapava": "^2.1.3"
+    "tapava": "^2.1.4"
   },
   "dependencies": {
     "async-cache-promise": "^2.0.0",
