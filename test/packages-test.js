@@ -72,7 +72,7 @@ test('packages.put & packages.get', function * (t) {
     }
   };
   const packages = setupPackages({db, port: 1234});
-  yield packages.put('foo', input);
+  yield packages.put(input);
   t.is(called, 1);
   const actual = yield packages.get('foo');
   t.deepEqual(actual, expected);
