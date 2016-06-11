@@ -42,3 +42,15 @@ test('/:package error', function * (t) {
   t.is(body.toString(), 'Beep boop');
   t.is(statusCode, 500);
 });
+
+test('/tarballs/:pkg/:version.tgz', function * (t) {
+  const getTarball = ({pkg, version}) => {
+    t.is(pkg, 'bar');
+    t.is(version, '666.7.8');
+    return Promise.resolve('blipp');
+  };
+  const app = startApp({getTarball});
+  const {body, statusCode} = yield servertest(app, '/tarballs/bar/666.7.8.tgz');
+  t.is(body.toString(), 'blipp');
+  t.is(statusCode, 200);
+});
