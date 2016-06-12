@@ -41,7 +41,8 @@
     "servertest": "^1.2.1",
     "snazzy": "^4.0.0",
     "tapava": "^2.1.4",
-    "tmp": "0.0.28"
+    "tmp": "0.0.28",
+    "touch": "^1.0.0"
   },
   "dependencies": {
     "async-cache-promise": "^2.0.0",
@@ -63,6 +64,7 @@
     "mkdirp": "^0.5.1",
     "nodeify": "^1.0.0",
     "normalize-npm-registry-package": "^1.0.0",
-    "then-fs": "^2.0.0"
+    "then-fs": "^2.0.0",
+    "versions-from-filenames": "^1.0.1"
   }
 }

@@ -1,13 +1,13 @@
 import test from 'tapava';
 import setupFollow from '../lib/follow';
-import {dirSync} from 'tmp';
+import {dirSync as tmp} from 'tmp';
 import setupPouchdbServer from './utils/pouchdb-server';
 import PouchDB from 'pouchdb-http';
 import Promise from 'bluebird';
 
 test('follow()', function * (t) {
   const {dbUrl, kill} = yield setupPouchdbServer();
-  const {name: dir} = dirSync();
+  const {name: dir} = tmp();
   const input = {
     _id: 'bar',
     name: 'bar'
