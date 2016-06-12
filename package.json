@@ -50,6 +50,7 @@
     "bluebird": "^3.4.0",
     "co": "^4.6.0",
     "concurrent-couch-follower": "^1.0.1",
+    "find-newer-npm-package": "^1.0.0",
     "got": "^6.3.0",
     "home": "^1.0.1",
     "koa": "^1.2.0",
