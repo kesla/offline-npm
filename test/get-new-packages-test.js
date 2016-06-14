@@ -5,7 +5,7 @@ import {join} from 'path';
 import setupGetNewPackages from '../lib/get-new-packages';
 import Promise from 'bluebird';
 
-test('getNewPackages', function * (t) {
+test('getNewPackages() when tarballs exists', function * (t) {
   const {name: dir} = tmp();
   touch(join(dir, 'foo-bar-1.0.0.tgz'));
   touch(join(dir, 'foo-bar-1.1.0.tgz'));
@@ -29,5 +29,22 @@ test('getNewPackages', function * (t) {
 
   const actual = (yield getNewPackages('foo-bar')).sort();
   const expected = ['1.1.1', '1.2.0', '2.0.0'];
+  t.deepEqual(actual, expected);
+});
+
+test('getNewPackages() when tarballs does not exists', function * (t) {
+  const {name: dir} = tmp();
+  const packages = {
+    get: packageName => Promise.resolve({
+      versions: {
+        '1.0.0': {}
+      }
+    })
+  };
+
+  const getNewPackages = setupGetNewPackages({dir, packages});
+
+  const actual = (yield getNewPackages('foo-bar')).sort();
+  const expected = [];
   t.deepEqual(actual, expected);
 });

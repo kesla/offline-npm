@@ -11,6 +11,7 @@ const servertest = (app, path, opts) =>
   _servertest(http.createServer(app.callback()), path, opts);
 const jsontest = (app, path, opts) =>
   servertest(app, path, assign({encoding: 'json'}, opts));
+const noop = () => {};
 
 test('/:package, known', function * (t) {
   const data = {foo: 'bar'};
@@ -18,7 +19,7 @@ test('/:package, known', function * (t) {
     t.is(packageName, 'foo');
     return Promise.resolve(data);
   };
-  const app = startApp({getPackage});
+  const app = startApp({getPackage, getTarball: noop});
   const {body, statusCode} = yield jsontest(app, '/foo');
 
   t.deepEqual(body, data);
@@ -27,7 +28,7 @@ test('/:package, known', function * (t) {
 
 test('/:package, unknown', function * (t) {
   const getPackage = packageName => Promise.reject(new NotFoundError());
-  const app = startApp({getPackage});
+  const app = startApp({getPackage, getTarball: noop});
   const {body, statusCode} = yield jsontest(app, '/beep');
 
   t.deepEqual(body, {});
@@ -36,20 +37,20 @@ test('/:package, unknown', function * (t) {
 
 test('/:package error', function * (t) {
   const getPackage = packageName => Promise.reject(new Error('Beep boop'));
-  const app = startApp({getPackage});
+  const app = startApp({getPackage, getTarball: noop});
   const {body, statusCode} = yield servertest(app, '/beep');
 
   t.is(body.toString(), 'Beep boop');
   t.is(statusCode, 500);
 });
 
-test('/tarballs/:pkg/:version.tgz', function * (t) {
-  const getTarball = ({pkg, version}) => {
-    t.is(pkg, 'bar');
+test('/tarballs/:packageName/:version.tgz', function * (t) {
+  const getTarball = ({packageName, version}) => {
+    t.is(packageName, 'bar');
     t.is(version, '666.7.8');
     return Promise.resolve('blipp');
   };
-  const app = startApp({getTarball});
+  const app = startApp({getPackage: noop, getTarball});
   const {body, statusCode} = yield servertest(app, '/tarballs/bar/666.7.8.tgz');
   t.is(body.toString(), 'blipp');
   t.is(statusCode, 200);

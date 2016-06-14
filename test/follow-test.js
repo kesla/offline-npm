@@ -19,7 +19,7 @@ test('follow()', function * (t) {
   );
 
   let resolveDownloadNewPackages;
-  const downloadNewPackagesPromise =  new Promise(
+  const downloadNewPackagesPromise = new Promise(
     resolve => { resolveDownloadNewPackages = resolve; }
   );
 
