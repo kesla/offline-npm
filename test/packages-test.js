@@ -2,6 +2,7 @@ import test from 'tapava';
 import setupPackages from '../lib/packages';
 import {NotFoundError} from 'level-errors';
 import http from 'http';
+import shutdown from 'http-shutdown';
 
 test('packages.get()', function * (t) {
   let called = 0;
@@ -110,6 +111,7 @@ test('packages.get() package not in db', function * (t) {
 
     const server = http.createServer(onRequest).listen(0, () => resolve(server));
   });
+  shutdown(skimServer);
 
   const skimUrl = `http://localhost:${skimServer.address().port}/registry`;
 
@@ -119,4 +121,7 @@ test('packages.get() package not in db', function * (t) {
   t.is(called, 1, 'set() is called');
   yield packages.get('foo');
   t.is(called, 1, 'data is cached and saved');
+  yield new Promise(resolve => {
+    skimServer.shutdown(resolve);
+  });
 });
