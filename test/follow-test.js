@@ -15,7 +15,7 @@ test('follow() when package is in db', function * (t) {
   };
 
   let resolveGetPackage;
-  const getPackagePromies = new Promise(
+  const getDbPromies = new Promise(
     resolve => { resolveGetPackage = resolve; }
   );
 
@@ -29,12 +29,14 @@ test('follow() when package is in db', function * (t) {
     resolve => { resolveDownloadNewPackages = resolve; }
   );
 
-  const packages = {
+  const db = {
     get: packageName => {
       t.is(packageName, 'bar');
       resolveGetPackage();
       return Promise.resolve({});
-    },
+    }
+  };
+  const packages = {
     put: doc => {
       t.is(doc._id, 'bar');
       t.is(doc.name, 'bar');
@@ -43,7 +45,7 @@ test('follow() when package is in db', function * (t) {
       return Promise.resolve(null);
     }
   };
-  const db = new PouchDB(dbUrl);
+  const pouchDb = new PouchDB(dbUrl);
 
   const downloadNewPackages = packageName => {
     t.is(packageName, 'bar');
@@ -52,13 +54,13 @@ test('follow() when package is in db', function * (t) {
   };
 
   const follow = setupFollow({
-    dir, packages, skimUrl: dbUrl, downloadNewPackages
+    dir, db, packages, skimUrl: dbUrl, downloadNewPackages
   });
 
   // no name property, should be ignored
-  yield db.put({_id: 'foo'});
-  yield db.put(input);
-  yield getPackagePromies;
+  yield pouchDb.put({_id: 'foo'});
+  yield pouchDb.put(input);
+  yield getDbPromies;
   yield putPackagePromise;
   yield downloadNewPackagesPromise;
 
@@ -79,32 +81,30 @@ test('follow() when package is not in db', function * (t) {
   };
 
   let resolveGetPackage;
-  const getPackagePromies = new Promise(
+  const getDbPromies = new Promise(
     resolve => { resolveGetPackage = resolve; }
   );
 
-  const packages = {
+  const db = {
     get: packageName => {
       t.is(packageName, 'bar');
       resolveGetPackage();
       return Promise.reject(new NotFoundError());
-    },
-    put: () => {
-      throw new Error('should not be called');
     }
   };
-  const db = new PouchDB(dbUrl);
+  const packages = {};
+  const pouchDb = new PouchDB(dbUrl);
 
   const downloadNewPackages = () => {
     throw new Error('should not be called');
   };
 
   const follow = setupFollow({
-    dir, packages, skimUrl: dbUrl, downloadNewPackages
+    dir, db, packages, skimUrl: dbUrl, downloadNewPackages
   });
 
-  yield db.put(input);
-  yield getPackagePromies;
+  yield pouchDb.put(input);
+  yield getDbPromies;
 
   follow.end();
   kill();
