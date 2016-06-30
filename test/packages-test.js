@@ -147,7 +147,7 @@ test('packages.get() scoped package', function * (t) {
   const registryServer = yield new Promise(resolve => {
     const onRequest = (req, res) => {
       called++;
-      t.is(req.url, '/registry/@bar/foo');
+      t.is(req.url, '/registry/@bar%2Ffoo');
       res.end(JSON.stringify(registryData));
     };
 
