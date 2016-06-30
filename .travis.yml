@@ -1,3 +1,6 @@
+env:
+  matrix:
+  - CC=clang CXX=clang++ npm_config_clang=1
 language: node_js
 node_js:
 - 4
