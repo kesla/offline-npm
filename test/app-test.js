@@ -194,11 +194,11 @@ test('GET /tarballs/:packageName/:version.tgz', function * (t) {
   t.is(statusCode, 200);
 });
 
-test('PUT /:package', function * (t) {
+test('PUT /* proxies to registryUrl', function * (t) {
   const registryServer = yield setupHttpServer((req, res) => {
-    t.match(req.headers, {
-      beep: 'boop'
-    });
+    t.is(req.method, 'PUT');
+    t.match(req.headers, {beep: 'boop'});
+    t.is(req.url, '/some/random/url');
     req.once('data', chunk => {
       t.deepEqual(JSON.parse(chunk.toString()), {request: true});
       res.end('{"result": true}');
@@ -206,9 +206,28 @@ test('PUT /:package', function * (t) {
   });
   const registryUrl = `http://localhost:${registryServer.address().port}`;
   const app = startApp({getPackage: noop, getTarball: noop, registryUrl});
-  const {body, statusCode} = yield jsontest(app, '/bar', {
+  const {body, statusCode} = yield jsontest(app, '/some/random/url', {
     method: 'put',
     body: {request: true},
+    headers: {beep: 'boop'}
+  });
+
+  t.deepEqual(body, {result: true});
+  t.is(statusCode, 200);
+  yield registryServer.shutdown();
+});
+
+test('DELETE /* proxies to registryUrl', function * (t) {
+  const registryServer = yield setupHttpServer((req, res) => {
+    t.is(req.method, 'DELETE');
+    t.match(req.headers, {beep: 'boop'});
+    t.is(req.url, '/some/random/url');
+    res.end('{"result": true}');
+  });
+  const registryUrl = `http://localhost:${registryServer.address().port}`;
+  const app = startApp({getPackage: noop, getTarball: noop, registryUrl});
+  const {body, statusCode} = yield jsontest(app, '/some/random/url', {
+    method: 'delete',
     headers: {beep: 'boop'}
   });
 
