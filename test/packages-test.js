@@ -138,7 +138,7 @@ test('packages.get() scoped package', function * (t) {
   const db = {};
   const registryServer = yield setupHttpServer((req, res) => {
     called++;
-    t.is(req.url, '/registry/@bar%2Ffoo');
+    t.is(req.url, '/registry/@bar%2ffoo');
     res.end(JSON.stringify(registryData));
   });
 
