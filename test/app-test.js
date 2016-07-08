@@ -33,17 +33,43 @@ const jsontest = (app, path, _opts = {}) => {
 const noop = () => {};
 
 test('GET /:package, known', function * (t) {
-  const data = {foo: 'bar'};
+  const data = {
+    name: 'foo',
+    versions: {
+      '1.2.3': {
+        dist: {
+          tarball: 'will-be-overwritten'
+        }
+      },
+      '1.2.4': {},
+      'not-valid-semver': {}
+    }
+  };
+  const expected = {
+    name: 'foo',
+    versions: {
+      '1.2.3': {
+        dist: {
+          tarball: 'http://localhost:8044/tarballs/foo/1.2.3.tgz'
+        }
+      },
+      '1.2.4': {
+        dist: {
+          tarball: 'http://localhost:8044/tarballs/foo/1.2.4.tgz'
+        }
+      }
+    }
+  };
   const packages = {
     get: packageName => {
       t.is(packageName, 'foo');
       return Promise.resolve(data);
     }
   };
-  const app = startApp({packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
-  const {body, statusCode} = yield jsontest(app, '/foo');
+  const app = startApp({port: 8044, packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
+  const {body: actual, statusCode} = yield jsontest(app, '/foo');
 
-  t.deepEqual(body, data);
+  t.deepEqual(actual, expected);
   t.is(statusCode, 200);
 });
 
@@ -51,7 +77,7 @@ test('GET /:package, unknown', function * (t) {
   const packages = {
     get: packageName => Promise.reject(new NotFoundError())
   };
-  const app = startApp({packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
+  const app = startApp({port: 8044, packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
   const {body, statusCode} = yield jsontest(app, '/beep');
 
   t.deepEqual(body, {});
@@ -62,7 +88,7 @@ test('GET /:package error', function * (t) {
   const packages = {
     get: packageName => Promise.reject(new Error('Beep boop'))
   };
-  const app = startApp({packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
+  const app = startApp({port: 8044, packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
   const {body, statusCode} = yield servertest(app, '/beep');
 
   t.is(body.toString(), 'Beep boop');
@@ -75,6 +101,7 @@ test('GET /:package/:dist-tag', function * (t) {
       t.is(packageName, 'beep');
 
       return Promise.resolve({
+        name: 'beep',
         'dist-tags': {
           latest: '1.0.0'
         },
@@ -95,9 +122,9 @@ test('GET /:package/:dist-tag', function * (t) {
       });
     }
   };
-  const app = startApp({packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
+  const app = startApp({port: 8044, packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
   const {body, statusCode} = yield jsontest(app, '/beep/latest');
-  t.deepEqual(body, {version: '1.0.0'});
+  t.deepEqual(body, {dist: {tarball: 'http://localhost:8044/tarballs/beep/1.0.0.tgz'}, version: '1.0.0'});
   t.is(statusCode, 200);
 });
 
@@ -107,6 +134,7 @@ test('GET /:package/:version', function * (t) {
       t.is(packageName, 'beep');
 
       return Promise.resolve({
+        name: 'beep',
         versions: {
           '1.0.0': {
             version: '1.0.0'
@@ -121,9 +149,9 @@ test('GET /:package/:version', function * (t) {
       });
     }
   };
-  const app = startApp({packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
+  const app = startApp({port: 8044, packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
   const {body, statusCode} = yield jsontest(app, '/beep/^0.5.0');
-  t.deepEqual(body, {version: '0.5.1'});
+  t.deepEqual(body, {dist: {tarball: 'http://localhost:8044/tarballs/beep/0.5.1.tgz'}, version: '0.5.1'});
   t.is(statusCode, 200);
 });
 
@@ -147,7 +175,7 @@ test('GET /:package/:version, unknown version', function * (t) {
       });
     }
   };
-  const app = startApp({packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
+  const app = startApp({port: 8044, packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
   const {body, statusCode} = yield jsontest(app, '/beep/^0.5.2');
   t.deepEqual(body, {});
   t.is(statusCode, 404);
@@ -173,7 +201,7 @@ test('GET /:package/:version, unknown tag', function * (t) {
       });
     }
   };
-  const app = startApp({packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
+  const app = startApp({port: 8044, packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
   const {body, statusCode} = yield jsontest(app, '/beep/none-existing-tag');
   t.deepEqual(body, {});
   t.is(statusCode, 404);
@@ -182,7 +210,7 @@ test('GET /:package/:version, unknown package', function * (t) {
   const packages = {
     get: packageName => Promise.reject(new NotFoundError())
   };
-  const app = startApp({packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
+  const app = startApp({port: 8044, packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
   const {body, statusCode} = yield jsontest(app, '/beep/latest');
 
   t.deepEqual(body, {});
@@ -193,7 +221,7 @@ test('GET /:package/:version, error', function * (t) {
   const packages = {
     get: packageName => Promise.reject(new Error('beep boop'))
   };
-  const app = startApp({packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
+  const app = startApp({port: 8044, packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
   const {body, statusCode} = yield servertest(app, '/beep/latest');
 
   t.deepEqual(body.toString(), 'beep boop');
@@ -206,7 +234,7 @@ test('GET /tarballs/:packageName/:version.tgz', function * (t) {
     t.is(version, '666.7.8');
     return Promise.resolve('blipp');
   };
-  const app = startApp({packages: {}, getTarball, registryUrl: 'http://irrelevant'});
+  const app = startApp({port: 8044, packages: {}, getTarball, registryUrl: 'http://irrelevant'});
   const {body, statusCode} = yield servertest(app, '/tarballs/bar/666.7.8.tgz');
   t.is(body.toString(), 'blipp');
   t.is(statusCode, 200);
@@ -222,7 +250,7 @@ test('PUT /* proxies to registryUrl', function * (t) {
       res.end('{"result": true}');
     });
   });
-  const app = startApp({packages: {}, getTarball: noop, registryUrl});
+  const app = startApp({port: 8044, packages: {}, getTarball: noop, registryUrl});
   const {body, statusCode} = yield jsontest(app, '/some/random/url', {
     method: 'put',
     body: {request: true},
@@ -241,7 +269,7 @@ test('DELETE /* proxies to registryUrl', function * (t) {
     t.is(req.url, '/some/random/url');
     res.end('{"result": true}');
   });
-  const app = startApp({packages: {}, getTarball: noop, registryUrl});
+  const app = startApp({port: 8044, packages: {}, getTarball: noop, registryUrl});
   const {body, statusCode} = yield jsontest(app, '/some/random/url', {
     method: 'delete',
     headers: {beep: 'boop'}

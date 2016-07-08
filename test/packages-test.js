@@ -12,13 +12,7 @@ test('packages.get()', function * (t) {
       return Promise.resolve({
         name: 'foo',
         versions: {
-          '1.2.3': {
-            dist: {
-              tarball: 'will-be-overwritten'
-            }
-          },
-          'not-valid-semver': {
-          }
+          '1.2.3': {}
         }
       });
     }
@@ -26,11 +20,7 @@ test('packages.get()', function * (t) {
   const expected = {
     name: 'foo',
     versions: {
-      '1.2.3': {
-        dist: {
-          tarball: 'http://localhost:1234/tarballs/foo/1.2.3.tgz'
-        }
-      }
+      '1.2.3': {}
     }
   };
   const skimUrl = 'http://irrelevant';
@@ -48,13 +38,7 @@ test('packages.put & packages.get', function * (t) {
   const input = {
     name: 'foo',
     versions: {
-      '1.2.3': {
-        dist: {
-          tarball: 'will-be-overwritten'
-        }
-      },
-      'not-valid-semver': {
-      }
+      '1.2.3': {}
     }
   };
   const db = {
@@ -69,11 +53,7 @@ test('packages.put & packages.get', function * (t) {
   const expected = {
     name: 'foo',
     versions: {
-      '1.2.3': {
-        dist: {
-          tarball: 'http://localhost:1234/tarballs/foo/1.2.3.tgz'
-        }
-      }
+      '1.2.3': {}
     }
   };
   const skimUrl = 'http://irrelevant';

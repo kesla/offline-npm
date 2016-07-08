@@ -53,6 +53,7 @@
     "find-newer-npm-package": "^1.0.0",
     "got": "^6.3.0",
     "home": "^1.0.1",
+    "immutable-object-methods": "^1.2.1",
     "koa": "^1.2.0",
     "koa-conditional-get": "^1.0.3",
     "koa-etag": "^2.1.1",
