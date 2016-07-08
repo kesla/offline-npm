@@ -12,6 +12,6 @@ export default function * (onRequest) {
     shutdown: () => new Promise(resolve => {
       server.shutdown(resolve);
     }),
-    address: () => server.address()
+    baseUrl: `http://localhost:${server.address().port}`
   };
 }

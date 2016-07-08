@@ -106,12 +106,12 @@ test('packages.get() package not in db', function * (t) {
       return Promise.resolve(null);
     }
   };
-  const skimServer = yield setupHttpServer((req, res) => {
+  const {shutdown, baseUrl} = yield setupHttpServer((req, res) => {
     t.is(req.url, '/registry/foo');
     res.end(JSON.stringify(registryData));
   });
 
-  const skimUrl = `http://localhost:${skimServer.address().port}/registry`;
+  const skimUrl = `${baseUrl}/registry`;
   const registryUrl = 'http://irrelevant';
 
   const packages = setupPackages({db, port: 1234, skimUrl, registryUrl});
@@ -120,7 +120,7 @@ test('packages.get() package not in db', function * (t) {
   t.is(called, 1, 'set() is called');
   yield packages.get('foo');
   t.is(called, 1, 'data is cached and saved');
-  yield skimServer.shutdown();
+  yield shutdown();
 });
 
 test('packages.get() scoped package', function * (t) {
@@ -136,13 +136,13 @@ test('packages.get() scoped package', function * (t) {
     }
   };
   const db = {};
-  const registryServer = yield setupHttpServer((req, res) => {
+  const {shutdown, baseUrl} = yield setupHttpServer((req, res) => {
     called++;
     t.is(req.url, '/registry/@bar%2ffoo');
     res.end(JSON.stringify(registryData));
   });
 
-  const registryUrl = `http://localhost:${registryServer.address().port}/registry`;
+  const registryUrl = `${baseUrl}/registry`;
   const skimUrl = 'http://irrelevant';
 
   const packages = setupPackages({db, port: 1234, registryUrl, skimUrl});
@@ -151,5 +151,5 @@ test('packages.get() scoped package', function * (t) {
   t.is(called, 1, 'registryServer gets a request');
   yield packages.get('@bar/foo');
   t.is(called, 2, 'scoped packages are not cached');
-  yield registryServer.shutdown();
+  yield shutdown();
 });
