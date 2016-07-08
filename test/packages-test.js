@@ -1,8 +1,7 @@
 import test from 'tapava';
 import setupPackages from '../lib/packages';
 import {NotFoundError} from 'level-errors';
-import http from 'http';
-import shutdown from 'http-shutdown';
+import setupHttpServer from './utils/http-server';
 
 test('packages.get()', function * (t) {
   let called = 0;
@@ -107,15 +106,10 @@ test('packages.get() package not in db', function * (t) {
       return Promise.resolve(null);
     }
   };
-  const skimServer = yield new Promise(resolve => {
-    const onRequest = (req, res) => {
-      t.is(req.url, '/registry/foo');
-      res.end(JSON.stringify(registryData));
-    };
-
-    const server = http.createServer(onRequest).listen(0, () => resolve(server));
+  const skimServer = yield setupHttpServer((req, res) => {
+    t.is(req.url, '/registry/foo');
+    res.end(JSON.stringify(registryData));
   });
-  shutdown(skimServer);
 
   const skimUrl = `http://localhost:${skimServer.address().port}/registry`;
   const registryUrl = 'http://irrelevant';
@@ -126,9 +120,7 @@ test('packages.get() package not in db', function * (t) {
   t.is(called, 1, 'set() is called');
   yield packages.get('foo');
   t.is(called, 1, 'data is cached and saved');
-  yield new Promise(resolve => {
-    skimServer.shutdown(resolve);
-  });
+  yield skimServer.shutdown();
 });
 
 test('packages.get() scoped package', function * (t) {
@@ -144,17 +136,11 @@ test('packages.get() scoped package', function * (t) {
     }
   };
   const db = {};
-  const registryServer = yield new Promise(resolve => {
-    const onRequest = (req, res) => {
-      called++;
-      t.is(req.url, '/registry/@bar%2Ffoo');
-      res.end(JSON.stringify(registryData));
-    };
-
-    const server = http.createServer(onRequest).listen(0, () => resolve(server));
+  const registryServer = yield setupHttpServer((req, res) => {
+    called++;
+    t.is(req.url, '/registry/@bar%2Ffoo');
+    res.end(JSON.stringify(registryData));
   });
-
-  shutdown(registryServer);
 
   const registryUrl = `http://localhost:${registryServer.address().port}/registry`;
   const skimUrl = 'http://irrelevant';
@@ -165,7 +151,5 @@ test('packages.get() scoped package', function * (t) {
   t.is(called, 1, 'registryServer gets a request');
   yield packages.get('@bar/foo');
   t.is(called, 2, 'scoped packages are not cached');
-  yield new Promise(resolve => {
-    registryServer.shutdown(resolve);
-  });
+  yield registryServer.shutdown();
 });
