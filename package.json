@@ -67,7 +67,6 @@
     "msgpack": "^1.0.2",
     "nodeify": "^1.0.0",
     "normalize-npm-registry-package": "^1.0.0",
-    "npm-package-arg": "^4.2.0",
     "resolve-npm-version": "^1.0.0",
     "then-fs": "^2.0.0",
     "versions-from-filenames": "^1.0.1"

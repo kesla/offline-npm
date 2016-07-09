@@ -102,34 +102,3 @@ test('packages.get() package not in db', function * (t) {
   t.is(called, 1, 'data is cached and saved');
   yield shutdown();
 });
-
-test('packages.get() scoped package', function * (t) {
-  let called = 0;
-  const registryData = {
-    name: '@bar/foo',
-    versions: {
-      '1.2.3': {
-        dist: {
-          tarball: 'http://localhost:1234/tarballs/@bar/foo/1.2.3.tgz'
-        }
-      }
-    }
-  };
-  const db = {};
-  const {shutdown, baseUrl} = yield setupHttpServer((req, res) => {
-    called++;
-    t.is(req.url, '/registry/@bar%2ffoo');
-    res.end(JSON.stringify(registryData));
-  });
-
-  const registryUrl = `${baseUrl}/registry`;
-  const skimUrl = 'http://irrelevant';
-
-  const packages = setupPackages({db, port: 1234, registryUrl, skimUrl});
-  const actual = yield packages.get('@bar/foo');
-  t.deepEqual(actual, registryData);
-  t.is(called, 1, 'registryServer gets a request');
-  yield packages.get('@bar/foo');
-  t.is(called, 2, 'scoped packages are not cached');
-  yield shutdown();
-});
