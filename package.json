@@ -33,7 +33,7 @@
     "express-pouchdb": "^1.0.3",
     "http-shutdown": "^1.0.3",
     "level-errors": "^1.0.4",
-    "nyc": "^6.4.4",
+    "nyc": "^7.0.0",
     "object-assign": "^4.1.0",
     "pouchdb-adapter-memory": "^5.4.1",
     "pouchdb-core": "^5.4.1",
