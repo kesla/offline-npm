@@ -7,8 +7,8 @@ import {NotFoundError} from 'level-errors';
 import setupFollow from '../lib/follow';
 import setupPouchdbServer from './utils/pouchdb-server';
 
-test('follow() when package is in db', function * (t) {
-  const {dbUrl, kill} = yield setupPouchdbServer();
+test('follow() when package is in db', async t => {
+  const {dbUrl, kill} = await setupPouchdbServer();
   const {name: dir} = tmp();
   const input = {
     _id: 'bar',
@@ -59,11 +59,11 @@ test('follow() when package is in db', function * (t) {
   });
 
   // no name property, should be ignored
-  yield pouchDb.put({_id: 'foo'});
-  yield pouchDb.put(input);
-  yield getDbPromies;
-  yield putPackagePromise;
-  yield downloadNewPackagesPromise;
+  await pouchDb.put({_id: 'foo'});
+  await pouchDb.put(input);
+  await getDbPromies;
+  await putPackagePromise;
+  await downloadNewPackagesPromise;
 
   t.notThrows(() => {
     follow.emit('error', new Error('beep boop'));
@@ -73,8 +73,8 @@ test('follow() when package is in db', function * (t) {
   kill();
 });
 
-test('follow() when package is not in db', function * (t) {
-  const {dbUrl, kill} = yield setupPouchdbServer();
+test('follow() when package is not in db', async t => {
+  const {dbUrl, kill} = await setupPouchdbServer();
   const {name: dir} = tmp();
   const input = {
     _id: 'bar',
@@ -104,8 +104,8 @@ test('follow() when package is not in db', function * (t) {
     dir, db, packages, skimUrl: dbUrl, downloadNewPackages
   });
 
-  yield pouchDb.put(input);
-  yield getDbPromies;
+  await pouchDb.put(input);
+  await getDbPromies;
 
   follow.end();
   kill();
