@@ -279,3 +279,20 @@ test('DELETE /* proxies to registryUrl', async t => {
   t.is(statusCode, 200);
   await shutdown();
 });
+
+test('GET /@* (scoped) proxies to registryUrl', async t => {
+  const {shutdown, baseUrl: registryUrl} = await setupHttpServer((req, res) => {
+    t.is(req.method, 'GET');
+    t.match(req.headers, {beep: 'boop'});
+    t.is(req.url, '/@scope/random/url');
+    res.end('{"result": true}');
+  });
+  const app = startApp({port: 8044, packages: {}, getTarball: noop, registryUrl});
+  const {body, statusCode} = await jsontest(app, '/@scope/random/url', {
+    headers: {beep: 'boop'}
+  });
+
+  t.deepEqual(body, {result: true});
+  t.is(statusCode, 200);
+  await shutdown();
+});
