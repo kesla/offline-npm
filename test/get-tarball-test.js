@@ -8,19 +8,19 @@ import setupHttpServer from 'http-test-server';
 
 import setupGetTarball from '../lib/get-tarball';
 
-test('getTarball() local file', function * (t) {
+test('getTarball() local file', async t => {
   const {name: dir} = tmp();
-  yield fs.writeFile(join(dir, 'package-1.0.0.tgz'), 'foobar');
+  await fs.writeFile(join(dir, 'package-1.0.0.tgz'), 'foobar');
   const getTarball = setupGetTarball({dir, packages: {}});
-  const tarball = yield getTarball({packageName: 'package', version: '1.0.0'});
+  const tarball = await getTarball({packageName: 'package', version: '1.0.0'});
   const expected = 'foobar';
   const actual = tarball.toString();
   t.is(actual, expected);
 });
 
-test('getTarball() remote file', function * (t) {
+test('getTarball() remote file', async t => {
   const {name: dir} = tmp();
-  const {shutdown, baseUrl: tarballUrl} = yield setupHttpServer((req, res) => {
+  const {shutdown, baseUrl: tarballUrl} = await setupHttpServer((req, res) => {
     t.is(req.url, '/custom/package/url.tgz');
     res.end('foobar');
   });
@@ -40,9 +40,9 @@ test('getTarball() remote file', function * (t) {
     }
   };
   const getTarball = setupGetTarball({dir, packages});
-  const tarball = yield getTarball({packageName: 'package', version: '1.0.0'});
+  const tarball = await getTarball({packageName: 'package', version: '1.0.0'});
   const expected = 'foobar';
   const actual = tarball.toString();
   t.is(actual, expected);
-  yield shutdown();
+  await shutdown();
 });

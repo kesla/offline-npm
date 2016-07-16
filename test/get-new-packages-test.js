@@ -7,7 +7,7 @@ import Promise from 'bluebird';
 
 import setupGetNewPackages from '../lib/get-new-packages';
 
-test('getNewPackages() when tarballs exists', function * (t) {
+test('getNewPackages() when tarballs exists', async t => {
   const {name: dir} = tmp();
   touch(join(dir, 'foo-bar-1.0.0.tgz'));
   touch(join(dir, 'foo-bar-1.1.0.tgz'));
@@ -29,12 +29,12 @@ test('getNewPackages() when tarballs exists', function * (t) {
   };
   const getNewPackages = setupGetNewPackages({dir, packages});
 
-  const actual = (yield getNewPackages('foo-bar')).sort();
+  const actual = (await getNewPackages('foo-bar')).sort();
   const expected = ['1.1.1', '1.2.0', '2.0.0'];
   t.deepEqual(actual, expected);
 });
 
-test('getNewPackages() when tarballs does not exists', function * (t) {
+test('getNewPackages() when tarballs does not exists', async t => {
   const {name: dir} = tmp();
   const packages = {
     get: () => Promise.resolve({
@@ -46,7 +46,7 @@ test('getNewPackages() when tarballs does not exists', function * (t) {
 
   const getNewPackages = setupGetNewPackages({dir, packages});
 
-  const actual = (yield getNewPackages('foo-bar')).sort();
+  const actual = (await getNewPackages('foo-bar')).sort();
   const expected = [];
   t.deepEqual(actual, expected);
 });
