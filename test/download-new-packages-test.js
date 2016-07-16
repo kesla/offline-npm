@@ -1,7 +1,7 @@
 import test from 'tapava';
 import setupDownloadNewPackages from '../lib/download-new-packages';
 
-test('downloadNewPackages()', function * (t) {
+test('downloadNewPackages()', async t => {
   const actualTarballs = [];
   const getNewPackages = packageName => {
     t.is(packageName, 'foo-bar');
@@ -16,7 +16,7 @@ test('downloadNewPackages()', function * (t) {
     getNewPackages, getTarball
   });
 
-  yield downloadNewPackages('foo-bar');
+  await downloadNewPackages('foo-bar');
   const expectedTarballs = [
     {packageName: 'foo-bar', version: '1.1.1'},
     {packageName: 'foo-bar', version: '1.2.0'}
