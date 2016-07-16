@@ -5,9 +5,9 @@ import test from 'tapava';
 import Promise from 'bluebird';
 import {NotFoundError} from 'level-errors';
 import assign from 'object-assign';
+import setupHttpServer from 'http-test-server';
 
 import startApp from '../lib/app';
-import setupHttpServer from './utils/http-server';
 
 const servertest = (app, path, opts = {}) => new Promise((resolve, reject) => {
   const server = http.createServer(app.callback());
@@ -247,10 +247,8 @@ test('PUT /* proxies to registryUrl', function * (t) {
     t.is(req.method, 'PUT');
     t.match(req.headers, {beep: 'boop'});
     t.is(req.url, '/some/random/url');
-    req.once('data', chunk => {
-      t.deepEqual(JSON.parse(chunk.toString()), {request: true});
-      res.end('{"result": true}');
-    });
+    t.deepEqual(JSON.parse(req.body.toString()), {request: true});
+    res.end('{"result": true}');
   });
   const app = startApp({port: 8044, packages: {}, getTarball: noop, registryUrl});
   const {body, statusCode} = yield jsontest(app, '/some/random/url', {

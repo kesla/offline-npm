@@ -1,8 +1,8 @@
 import test from 'tapava';
 import {NotFoundError} from 'level-errors';
+import setupHttpServer from 'http-test-server';
 
 import setupPackages from '../lib/packages';
-import setupHttpServer from './utils/http-server';
 
 test('packages.get()', function * (t) {
   let called = 0;

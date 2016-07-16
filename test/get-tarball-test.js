@@ -4,9 +4,9 @@ import test from 'tapava';
 import {dirSync as tmp} from 'tmp';
 import fs from 'then-fs';
 import Promise from 'bluebird';
+import setupHttpServer from 'http-test-server';
 
 import setupGetTarball from '../lib/get-tarball';
-import setupHttpServer from './utils/http-server';
 
 test('getTarball() local file', function * (t) {
   const {name: dir} = tmp();
