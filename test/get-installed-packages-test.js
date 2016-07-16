@@ -6,12 +6,12 @@ import {sync as touch} from 'touch';
 
 import getInstalledPackages from '../lib/get-installed-packages';
 
-test('getInstalledPackages', function * (t) {
+test('getInstalledPackages', async t => {
   const {name: dir} = tmp();
   touch(join(dir, 'foo-bar-1.0.0.tgz'));
   touch(join(dir, 'foo-bar-1.1.0.tgz'));
   touch(join(dir, 'foo-baz-1.0.0.tgz'));
-  const actual = yield getInstalledPackages(dir);
+  const actual = await getInstalledPackages(dir);
   const expected = {
     'foo-bar': ['1.0.0', '1.1.0'],
     'foo-baz': ['1.0.0']
