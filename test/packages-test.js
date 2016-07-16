@@ -4,7 +4,7 @@ import setupHttpServer from 'http-test-server';
 
 import setupPackages from '../lib/packages';
 
-test('packages.get()', function * (t) {
+test('packages.get()', async t => {
   let called = 0;
   const db = {
     get: packageName => {
@@ -27,14 +27,14 @@ test('packages.get()', function * (t) {
   const skimUrl = 'http://irrelevant';
   const registryUrl = skimUrl;
   const packages = setupPackages({db, port: 1234, skimUrl, registryUrl});
-  const actual = yield packages.get('foo');
+  const actual = await packages.get('foo');
   t.deepEqual(actual, expected);
   t.is(called, 1, 'get() is called once');
-  yield packages.get('foo');
+  await packages.get('foo');
   t.is(called, 1, 'get() is still called once (cached)');
 });
 
-test('packages.put & packages.get', function * (t) {
+test('packages.put & packages.get', async t => {
   let called = 0;
   const input = {
     name: 'foo',
@@ -60,13 +60,13 @@ test('packages.put & packages.get', function * (t) {
   const skimUrl = 'http://irrelevant';
   const registryUrl = skimUrl;
   const packages = setupPackages({db, port: 1234, skimUrl, registryUrl});
-  yield packages.put(input);
+  await packages.put(input);
   t.is(called, 1);
-  const actual = yield packages.get('foo');
+  const actual = await packages.get('foo');
   t.deepEqual(actual, expected);
 });
 
-test('packages.get() package not in db', function * (t) {
+test('packages.get() package not in db', async t => {
   let called = 0;
   const registryData = {
     name: 'foo',
@@ -87,7 +87,7 @@ test('packages.get() package not in db', function * (t) {
       return Promise.resolve(null);
     }
   };
-  const {shutdown, baseUrl} = yield setupHttpServer((req, res) => {
+  const {shutdown, baseUrl} = await setupHttpServer((req, res) => {
     t.is(req.url, '/registry/foo');
     res.end(JSON.stringify(registryData));
   });
@@ -96,10 +96,10 @@ test('packages.get() package not in db', function * (t) {
   const registryUrl = 'http://irrelevant';
 
   const packages = setupPackages({db, port: 1234, skimUrl, registryUrl});
-  const actual = yield packages.get('foo');
+  const actual = await packages.get('foo');
   t.deepEqual(actual, registryData);
   t.is(called, 1, 'set() is called');
-  yield packages.get('foo');
+  await packages.get('foo');
   t.is(called, 1, 'data is cached and saved');
-  yield shutdown();
+  await shutdown();
 });
