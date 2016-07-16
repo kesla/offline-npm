@@ -1,13 +1,14 @@
 import test from 'tapava';
-import setupPackages from '../lib/packages';
 import {NotFoundError} from 'level-errors';
+
+import setupPackages from '../lib/packages';
 import setupHttpServer from './utils/http-server';
 
 test('packages.get()', function * (t) {
   let called = 0;
   const db = {
     get: packageName => {
-      called = called + 1;
+      called += 1;
       t.is(packageName, 'foo');
       return Promise.resolve({
         name: 'foo',
@@ -43,7 +44,7 @@ test('packages.put & packages.get', function * (t) {
   };
   const db = {
     put: (packageName, data) => {
-      called = called + 1;
+      called += 1;
       t.is(packageName, 'foo');
       t.deepEqual(data, input);
       return Promise.resolve(null);
@@ -78,7 +79,7 @@ test('packages.get() package not in db', function * (t) {
     }
   };
   const db = {
-    get: packageName => Promise.reject(new NotFoundError()),
+    get: () => Promise.reject(new NotFoundError()),
     put: (packageName, data) => {
       t.is(packageName, 'foo');
       t.deepEqual(data, registryData);

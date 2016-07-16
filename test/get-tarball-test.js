@@ -1,10 +1,12 @@
+import {join} from 'path';
+
 import test from 'tapava';
-import setupGetTarball from '../lib/get-tarball';
 import {dirSync as tmp} from 'tmp';
 import fs from 'then-fs';
-import {join} from 'path';
-import setupHttpServer from './utils/http-server';
 import Promise from 'bluebird';
+
+import setupGetTarball from '../lib/get-tarball';
+import setupHttpServer from './utils/http-server';
 
 test('getTarball() local file', function * (t) {
   const {name: dir} = tmp();

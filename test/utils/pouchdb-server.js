@@ -1,6 +1,7 @@
 import {fork} from 'child_process';
-import Promise from 'bluebird';
 import {join} from 'path';
+
+import Promise from 'bluebird';
 
 export default () => {
   const child = fork(

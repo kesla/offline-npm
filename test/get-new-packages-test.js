@@ -1,9 +1,11 @@
+import {join} from 'path';
+
 import test from 'tapava';
 import {dirSync as tmp} from 'tmp';
 import {sync as touch} from 'touch';
-import {join} from 'path';
-import setupGetNewPackages from '../lib/get-new-packages';
 import Promise from 'bluebird';
+
+import setupGetNewPackages from '../lib/get-new-packages';
 
 test('getNewPackages() when tarballs exists', function * (t) {
   const {name: dir} = tmp();
@@ -35,7 +37,7 @@ test('getNewPackages() when tarballs exists', function * (t) {
 test('getNewPackages() when tarballs does not exists', function * (t) {
   const {name: dir} = tmp();
   const packages = {
-    get: packageName => Promise.resolve({
+    get: () => Promise.resolve({
       versions: {
         '1.0.0': {}
       }

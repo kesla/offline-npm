@@ -1,7 +1,9 @@
+import {join} from 'path';
+
 import test from 'tapava';
 import {dirSync as tmp} from 'tmp';
 import {sync as touch} from 'touch';
-import {join} from 'path';
+
 import getInstalledPackages from '../lib/get-installed-packages';
 
 test('getInstalledPackages', function * (t) {

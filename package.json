@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "npm run watch & nodemon -w dist -w bin bin/server.js",
-    "test": "nyc babel-tape-runner test/*-test.js && semistandard | snazzy",
+    "test": "xo && nyc babel-tape-runner test/*-test.js",
     "build": "rm -rf dist && mkdir -p dist && babel lib --out-dir dist",
     "watch": "rm -rf dist && mkdir -p dist && babel -w lib --out-dir dist",
     "prepublish": "npm run build",
@@ -39,12 +39,11 @@
     "pouchdb-adapter-memory": "^5.4.1",
     "pouchdb-core": "^5.4.1",
     "pouchdb-http": "^5.4.1",
-    "semistandard": "^8.0.0",
     "servertest": "^1.2.1",
-    "snazzy": "^4.0.0",
     "tapava": "^2.1.4",
     "tmp": "0.0.28",
-    "touch": "^1.0.0"
+    "touch": "^1.0.0",
+    "xo": "^0.16.0"
   },
   "dependencies": {
     "async-cache-promise": "^2.0.0",
@@ -71,5 +70,9 @@
     "resolve-npm-version": "^1.0.0",
     "then-fs": "^2.0.0",
     "versions-from-filenames": "^1.0.1"
+  },
+  "xo": {
+    "esnext": true,
+    "space": true
   }
 }

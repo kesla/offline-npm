@@ -3,13 +3,14 @@ import setupDownloadNewPackages from '../lib/download-new-packages';
 
 test('downloadNewPackages()', function * (t) {
   const actualTarballs = [];
-  const getNewPackages = function * (packageName) {
+  const getNewPackages = packageName => {
     t.is(packageName, 'foo-bar');
-    return ['1.1.1', '1.2.0'];
+    return Promise.resolve(['1.1.1', '1.2.0']);
   };
-  const getTarball = function * ({packageName, version}) {
+  const getTarball = ({packageName, version}) => {
     t.is(packageName, 'foo-bar');
     actualTarballs.push({packageName, version});
+    return Promise.resolve(null);
   };
   const downloadNewPackages = setupDownloadNewPackages({
     getNewPackages, getTarball

@@ -1,10 +1,11 @@
 import test from 'tapava';
-import setupFollow from '../lib/follow';
 import {dirSync as tmp} from 'tmp';
-import setupPouchdbServer from './utils/pouchdb-server';
 import PouchDB from 'pouchdb-http';
 import Promise from 'bluebird';
 import {NotFoundError} from 'level-errors';
+
+import setupFollow from '../lib/follow';
+import setupPouchdbServer from './utils/pouchdb-server';
 
 test('follow() when package is in db', function * (t) {
   const {dbUrl, kill} = yield setupPouchdbServer();
@@ -15,19 +16,19 @@ test('follow() when package is in db', function * (t) {
   };
 
   let resolveGetPackage;
-  const getDbPromies = new Promise(
-    resolve => { resolveGetPackage = resolve; }
-  );
+  const getDbPromies = new Promise(resolve => {
+    resolveGetPackage = resolve;
+  });
 
   let resolvePutPackage;
-  const putPackagePromise = new Promise(
-    resolve => { resolvePutPackage = resolve; }
-  );
+  const putPackagePromise = new Promise(resolve => {
+    resolvePutPackage = resolve;
+  });
 
   let resolveDownloadNewPackages;
-  const downloadNewPackagesPromise = new Promise(
-    resolve => { resolveDownloadNewPackages = resolve; }
-  );
+  const downloadNewPackagesPromise = new Promise(resolve => {
+    resolveDownloadNewPackages = resolve;
+  });
 
   const db = {
     get: packageName => {
@@ -81,9 +82,9 @@ test('follow() when package is not in db', function * (t) {
   };
 
   let resolveGetPackage;
-  const getDbPromies = new Promise(
-    resolve => { resolveGetPackage = resolve; }
-  );
+  const getDbPromies = new Promise(resolve => {
+    resolveGetPackage = resolve;
+  });
 
   const db = {
     get: packageName => {

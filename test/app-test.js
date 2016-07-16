@@ -1,10 +1,12 @@
+import http from 'http';
+
 import _servertest from 'servertest';
 import test from 'tapava';
 import Promise from 'bluebird';
-import startApp from '../lib/app';
-import http from 'http';
 import {NotFoundError} from 'level-errors';
 import assign from 'object-assign';
+
+import startApp from '../lib/app';
 import setupHttpServer from './utils/http-server';
 
 const servertest = (app, path, opts = {}) => new Promise((resolve, reject) => {
@@ -24,9 +26,9 @@ const servertest = (app, path, opts = {}) => new Promise((resolve, reject) => {
 
 const jsontest = (app, path, _opts = {}) => {
   const opts =
-    _opts.body
-    ? assign({encoding: 'json'}, _opts, {body: JSON.stringify(_opts.body)})
-    : assign({encoding: 'json'}, _opts);
+    _opts.body ?
+      assign({encoding: 'json'}, _opts, {body: JSON.stringify(_opts.body)}) :
+      assign({encoding: 'json'}, _opts);
   return servertest(app, path, opts);
 };
 
@@ -75,7 +77,7 @@ test('GET /:package, known', function * (t) {
 
 test('GET /:package, unknown', function * (t) {
   const packages = {
-    get: packageName => Promise.reject(new NotFoundError())
+    get: () => Promise.reject(new NotFoundError())
   };
   const app = startApp({port: 8044, packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
   const {body, statusCode} = yield jsontest(app, '/beep');
@@ -86,7 +88,7 @@ test('GET /:package, unknown', function * (t) {
 
 test('GET /:package error', function * (t) {
   const packages = {
-    get: packageName => Promise.reject(new Error('Beep boop'))
+    get: () => Promise.reject(new Error('Beep boop'))
   };
   const app = startApp({port: 8044, packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
   const {body, statusCode} = yield servertest(app, '/beep');
@@ -101,11 +103,11 @@ test('GET /:package/:dist-tag', function * (t) {
       t.is(packageName, 'beep');
 
       return Promise.resolve({
-        name: 'beep',
+        'name': 'beep',
         'dist-tags': {
           latest: '1.0.0'
         },
-        versions: {
+        'versions': {
           '2.0.0-beta1': {
             version: '2.0.0-beta1'
           },
@@ -208,7 +210,7 @@ test('GET /:package/:version, unknown tag', function * (t) {
 });
 test('GET /:package/:version, unknown package', function * (t) {
   const packages = {
-    get: packageName => Promise.reject(new NotFoundError())
+    get: () => Promise.reject(new NotFoundError())
   };
   const app = startApp({port: 8044, packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
   const {body, statusCode} = yield jsontest(app, '/beep/latest');
@@ -219,7 +221,7 @@ test('GET /:package/:version, unknown package', function * (t) {
 
 test('GET /:package/:version, error', function * (t) {
   const packages = {
-    get: packageName => Promise.reject(new Error('beep boop'))
+    get: () => Promise.reject(new Error('beep boop'))
   };
   const app = startApp({port: 8044, packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
   const {body, statusCode} = yield servertest(app, '/beep/latest');
