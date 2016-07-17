@@ -248,13 +248,14 @@ test('PUT /* proxies to registryUrl', async t => {
     t.match(req.headers, {beep: 'boop'});
     t.is(req.url, '/some/random/url');
     t.deepEqual(JSON.parse(req.body.toString()), {request: true});
+    t.notMatch(req.headers, {host: 'something-crazy'});
     res.end('{"result": true}');
   });
   const app = startApp({port: 8044, packages: {}, getTarball: noop, registryUrl});
   const {body, statusCode} = await jsontest(app, '/some/random/url', {
     method: 'put',
     body: {request: true},
-    headers: {beep: 'boop'}
+    headers: {beep: 'boop', host: 'something-crazy'}
   });
 
   t.deepEqual(body, {result: true});
@@ -267,12 +268,13 @@ test('DELETE /* proxies to registryUrl', async t => {
     t.is(req.method, 'DELETE');
     t.match(req.headers, {beep: 'boop'});
     t.is(req.url, '/some/random/url');
+    t.notMatch(req.headers, {host: 'something-crazy'});
     res.end('{"result": true}');
   });
   const app = startApp({port: 8044, packages: {}, getTarball: noop, registryUrl});
   const {body, statusCode} = await jsontest(app, '/some/random/url', {
     method: 'delete',
-    headers: {beep: 'boop'}
+    headers: {beep: 'boop', host: 'something-crazy'}
   });
 
   t.deepEqual(body, {result: true});
@@ -285,11 +287,12 @@ test('GET /@* (scoped) proxies to registryUrl', async t => {
     t.is(req.method, 'GET');
     t.match(req.headers, {beep: 'boop'});
     t.is(req.url, '/@scope/random/url');
+    t.notMatch(req.headers, {host: 'something-crazy'});
     res.end('{"result": true}');
   });
   const app = startApp({port: 8044, packages: {}, getTarball: noop, registryUrl});
   const {body, statusCode} = await jsontest(app, '/@scope/random/url', {
-    headers: {beep: 'boop'}
+    headers: {beep: 'boop', host: 'something-crazy'}
   });
 
   t.deepEqual(body, {result: true});
