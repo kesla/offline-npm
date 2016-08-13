@@ -37,7 +37,7 @@
     "http-test-server": "^1.0.0",
     "level-errors": "^1.0.4",
     "nodemon": "^1.9.2",
-    "nyc": "^7.0.0",
+    "nyc": "^8.0.0",
     "object-assign": "^4.1.0",
     "pouchdb-adapter-memory": "^5.4.1",
     "pouchdb-core": "^5.4.1",
