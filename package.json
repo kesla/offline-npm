@@ -4,7 +4,7 @@
   "description": "Offline first / caching npm registry",
   "main": "dist/index.js",
   "scripts": {
-    "start": "npm run watch & nodemon -w dist -w bin bin/server.js",
+    "start": "nodemon -w lib -w bin bin/server.js",
     "test": "xo && nyc babel-tape-runner test/*-test.js",
     "build": "rm -rf dist && mkdir -p dist && babel lib --out-dir dist",
     "watch": "rm -rf dist && mkdir -p dist && babel -w lib --out-dir dist",
@@ -35,7 +35,6 @@
     "express-pouchdb": "^1.0.3",
     "http-shutdown": "^1.0.3",
     "http-test-server": "^1.0.0",
-    "level-errors": "^1.0.4",
     "nodemon": "^1.9.2",
     "nyc": "^8.1.0",
     "object-assign": "^4.1.0",
@@ -49,7 +48,6 @@
     "xo": "^0.16.0"
   },
   "dependencies": {
-    "async-cache-promise": "^2.0.0",
     "bluebird": "^3.4.0",
     "concurrent-couch-follower": "^1.1.0",
     "find-newer-npm-package": "^1.0.0",
@@ -62,10 +60,7 @@
     "koa-etag": "^3.0.0",
     "koa-logger": "^2.0.0",
     "koa-router": "^7.0.1",
-    "level": "^1.4.0",
-    "level-sublevel": "^6.5.4",
     "mkdirp-then": "^1.2.0",
-    "msgpack": "^1.0.2",
     "nodeify": "^1.0.0",
     "normalize-registry-metadata": "^1.1.2",
     "resolve-npm-version": "^1.0.0",
