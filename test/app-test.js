@@ -3,11 +3,11 @@ import http from 'http';
 import _servertest from 'servertest';
 import test from 'tapava';
 import Promise from 'bluebird';
-import {NotFoundError} from 'level-errors';
 import assign from 'object-assign';
 import setupHttpServer from 'http-test-server';
 
 import startApp from '../lib/app';
+import NotFoundError from './utils/not-found-error';
 
 const servertest = (app, path, opts = {}) => new Promise((resolve, reject) => {
   const server = http.createServer(app.callback());

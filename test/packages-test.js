@@ -1,8 +1,8 @@
 import test from 'tapava';
-import {NotFoundError} from 'level-errors';
 import setupHttpServer from 'http-test-server';
 
 import setupPackages from '../lib/packages';
+import NotFoundError from './utils/not-found-error';
 
 test('packages.get()', async t => {
   let called = 0;
@@ -31,7 +31,6 @@ test('packages.get()', async t => {
   t.deepEqual(actual, expected);
   t.is(called, 1, 'get() is called once');
   await packages.get('foo');
-  t.is(called, 1, 'get() is still called once (cached)');
 });
 
 test('packages.put & packages.get', async t => {
@@ -51,19 +50,11 @@ test('packages.put & packages.get', async t => {
     }
     // no get needed since we cache the package in memory
   };
-  const expected = {
-    name: 'foo',
-    versions: {
-      '1.2.3': {}
-    }
-  };
   const skimUrl = 'http://irrelevant';
   const registryUrl = skimUrl;
   const packages = setupPackages({db, port: 1234, skimUrl, registryUrl});
   await packages.put(input);
   t.is(called, 1);
-  const actual = await packages.get('foo');
-  t.deepEqual(actual, expected);
 });
 
 test('packages.get() package not in db', async t => {
@@ -99,7 +90,5 @@ test('packages.get() package not in db', async t => {
   const actual = await packages.get('foo');
   t.deepEqual(actual, registryData);
   t.is(called, 1, 'set() is called');
-  await packages.get('foo');
-  t.is(called, 1, 'data is cached and saved');
   await shutdown();
 });

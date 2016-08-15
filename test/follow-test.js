@@ -2,10 +2,10 @@ import test from 'tapava';
 import {dirSync as tmp} from 'tmp';
 import PouchDB from 'pouchdb-http';
 import Promise from 'bluebird';
-import {NotFoundError} from 'level-errors';
 
 import setupFollow from '../lib/follow';
 import setupPouchdbServer from './utils/pouchdb-server';
+import NotFoundError from './utils/not-found-error';
 
 test('follow() when package is in db', async t => {
   const {dbUrl, kill} = await setupPouchdbServer();
