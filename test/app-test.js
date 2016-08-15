@@ -36,16 +36,18 @@ const noop = () => {};
 
 test('GET /:package, known', async t => {
   const data = {
-    name: 'foo',
-    versions: {
+    '_id': 'foo',
+    'name': 'foo',
+    'versions': {
       '1.2.3': {
         dist: {
           tarball: 'will-be-overwritten'
         }
       },
       '1.2.4': {},
-      'not-valid-semver': {}
-    }
+      '1.2.5beta1': {}
+    },
+    'dist-tags': []
   };
   const expected = {
     name: 'foo',
@@ -59,6 +61,11 @@ test('GET /:package, known', async t => {
         dist: {
           tarball: 'http://localhost:8044/tarballs/foo/1.2.4.tgz'
         }
+      },
+      '1.2.5-beta1': {
+        dist: {
+          tarball: 'http://localhost:8044/tarballs/foo/1.2.5-beta1.tgz'
+        }
       }
     }
   };
@@ -71,7 +78,7 @@ test('GET /:package, known', async t => {
   const app = startApp({port: 8044, packages, getTarball: noop, registryUrl: 'http://irrelevant/'});
   const {body: actual, statusCode} = await jsontest(app, '/foo');
 
-  t.deepEqual(actual, expected);
+  t.match(actual, expected);
   t.is(statusCode, 200);
 });
 

@@ -11,8 +11,13 @@ test('follow() when package is in db', async t => {
   const {dbUrl, kill} = await setupPouchdbServer();
   const {name: dir} = tmp();
   const input = {
-    _id: 'bar',
-    name: 'bar'
+    '_id': 'bar',
+    'name': 'bar',
+    'versions': {
+      '1.0.1': {},
+      '1.0.1beta1': {}
+    },
+    'dist-tags': []
   };
 
   let resolveGetPackage;
@@ -42,6 +47,9 @@ test('follow() when package is in db', async t => {
       t.is(doc._id, 'bar');
       t.is(doc.name, 'bar');
       t.is(doc._rev.slice(0, 2), '1-');
+
+      t.deepEqual(Object.keys(doc.versions), ['1.0.1', '1.0.1-beta1']);
+
       resolvePutPackage();
       return Promise.resolve(null);
     }
