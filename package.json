@@ -29,7 +29,7 @@
     "nodemon": "^1.9.2",
     "nyc": "^8.1.0",
     "object-assign": "^4.1.0",
-    "pouchdb-adapter-memory": "^5.4.1",
+    "pouchdb-adapter-memory": "^6.0.4",
     "pouchdb-core": "^5.4.1",
     "pouchdb-http": "^6.0.2",
     "servertest": "^1.2.1",
