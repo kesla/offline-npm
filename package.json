@@ -23,7 +23,7 @@
   "devDependencies": {
     "babel-tape-runner": "^2.0.1",
     "express": "^4.13.4",
-    "express-pouchdb": "^1.0.3",
+    "express-pouchdb": "^2.0.0",
     "http-shutdown": "^1.0.3",
     "http-test-server": "^1.0.0",
     "nodemon": "^1.9.2",
