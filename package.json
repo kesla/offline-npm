@@ -30,7 +30,7 @@
     "nyc": "^8.1.0",
     "object-assign": "^4.1.0",
     "pouchdb-adapter-memory": "^6.0.4",
-    "pouchdb-core": "^5.4.1",
+    "pouchdb-core": "^6.0.6",
     "pouchdb-http": "^6.0.2",
     "servertest": "^1.2.1",
     "tapava": "^2.1.4",
